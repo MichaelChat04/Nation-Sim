@@ -5,186 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nation Simulator</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        html, body {
+        body {
+            display: flex;
+            flex-direction: row;
             height: 100vh;
-            width: 100vw;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        #map-container {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+            border-right: 2px solid #ccc;
+        }
+        #map-container img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        #chat-container {
+            width: 50%;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            overflow: hidden;
-        }
-        #mapPanel {
-            position: fixed;
-            top: 50%;
-            left: -350px;
-            width: 350px;
-            height: auto;
-            background: white;
-            box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.5);
-            transition: left 0.3s ease-in-out;
-            padding: 15px;
-            border-radius: 10px;
-            transform: translateY(-50%);
-        }
-        #mapTab {
-            position: fixed;
-            top: 50%;
-            left: 0;
-            transform: translateY(-50%);
-            background: #333;
-            color: white;
-            padding: 10px;
-            cursor: pointer;
-        }
-        #mapPanel img {
-            width: 100%;
-            height: auto;
-            display: block;
-            margin: 0 auto;
-        }
-        #decisionBox {
-            width: 80vw;
-            max-width: 800px;
-            text-align: center;
-            background: white;
+            justify-content: flex-end;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #ai-response {
+            flex-grow: 1;
+            overflow-y: auto;
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ccc;
             margin-bottom: 10px;
-            position: fixed;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
+            height: 70%;
         }
-        #responseBox {
-            width: 80vw;
-            max-width: 800px;
-            text-align: center;
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            bottom: 250px;
-            left: 50%;
-            transform: translateX(-50%);
+        #user-input {
+            display: flex;
+            align-items: center;
         }
-        textarea {
-            width: 100%;
-            height: 150px;
-            border-radius: 5px;
+        #user-text {
+            flex-grow: 1;
             padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
             font-size: 16px;
-            resize: none;
         }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
+        #submit-button {
+            margin-left: 10px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
             border: none;
-            background: #007BFF;
-            color: white;
             border-radius: 5px;
             cursor: pointer;
         }
-        button:hover {
-            background: #0056b3;
-        }
-        #uploadTab {
-            position: fixed;
-            top: 50%;
-            right: 0;
-            transform: translateY(-50%);
-            background: #333;
-            color: white;
-            padding: 10px;
-            cursor: pointer;
-        }
-        #uploadPanel {
+        #document-upload {
             position: fixed;
             top: 0;
-            right: -300px;
-            width: 300px;
+            right: 0;
+            width: 250px;
             height: 100%;
-            background: white;
-            box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.5);
-            transition: right 0.3s ease-in-out;
-            padding: 20px;
+            background: #f8f8f8;
+            border-left: 2px solid #ccc;
+            padding: 10px;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
         }
-        .upload-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
+        #document-upload.active {
+            transform: translateX(0);
+        }
+        .toggle-btn {
+            position: absolute;
+            left: -40px;
+            top: 20px;
+            background: #007bff;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div id="mapTab" onclick="toggleMapPanel()">Map</div>
-    <div id="mapPanel">
-        <img id="map" src="static/map.png">
-        <button onclick="toggleMapPanel()">Close</button>
+    <div id="map-container">
+        <img src="/static/world_map.png" alt="Generated Map">
     </div>
-    
-    <div id="responseBox">
-        <p id="aiResponse">AI Response will appear here...</p>
-    </div>
-    
-    <div id="decisionBox">
-        <textarea id="userInput" placeholder="Enter your decision here..."></textarea>
-        <button id="submitDecisionBtn" onclick="submitDecision()">✅</button>
-    </div>
-    
-    <div id="uploadTab" onclick="toggleUploadPanel()">Documents</div>
-    <div id="uploadPanel">
-        <h2>Upload Documents</h2>
-        <input type="file" id="fileInput">
-        <div class="upload-buttons">
-            <button onclick="uploadFile()">Upload</button>
-            <button onclick="toggleUploadPanel()">Close</button>
+    <div id="chat-container">
+        <div id="ai-response">AI responses will appear here.</div>
+        <div id="user-input">
+            <input type="text" id="user-text" placeholder="Enter your decision...">
+            <button id="submit-button">✔</button>
         </div>
-        <p id="uploadMessage"></p>
     </div>
-    
+    <div id="document-upload">
+        <div class="toggle-btn" onclick="toggleUpload()">📁</div>
+        <h3>Upload Historical Documents</h3>
+        <input type="file" id="file-input" multiple>
+        <button onclick="uploadFiles()">Upload</button>
+    </div>
     <script>
-        function toggleMapPanel() {
-            let mapPanel = document.getElementById("mapPanel");
-            if (mapPanel.style.left === "-350px") {
-                mapPanel.style.left = "0px";
-            } else {
-                mapPanel.style.left = "-350px";
-            }
-        }
-        
-        function toggleUploadPanel() {
-            let uploadPanel = document.getElementById("uploadPanel");
-            if (uploadPanel.style.right === "-300px") {
-                uploadPanel.style.right = "0px";
-            } else {
-                uploadPanel.style.right = "-300px";
-            }
-        }
-        
-        function submitDecision() {
-            let userInput = document.getElementById("userInput").value;
-            
-            fetch("/submit_decision", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ user_input: userInput })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("aiResponse").innerText = "AI Response: " + data.response;
-            });
+        function toggleUpload() {
+            var uploadPanel = document.getElementById("document-upload");
+            uploadPanel.classList.toggle("active");
         }
     </script>
 </body>
