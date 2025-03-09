@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, jsonify, send_file
 import webbrowser
 from map_generator import generate_and_save_map
-from document_handler import handle_document_upload
+from document_handler import handle_document_upload, retrieve_relevant_data
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
@@ -33,7 +33,8 @@ def upload_file():
 @app.route('/submit_decision', methods=['POST'])
 def submit_decision():
     user_input = request.json.get("user_input", "")
-    ai_response = "Processing your decision based on historical data..."  # Placeholder response
+    relevant_data = retrieve_relevant_data(user_input)
+    ai_response = f"Based on historical records: {relevant_data}" if relevant_data else "No relevant data found."
     return jsonify({"response": ai_response})
 
 if __name__ == '__main__':
