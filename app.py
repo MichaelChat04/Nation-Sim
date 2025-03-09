@@ -42,13 +42,10 @@ html_content = f"""
             overflow: hidden;
         }}
         #mapContainer {{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 80vw;
-            max-width: 800px;
-            height: auto;
-            margin-top: 10px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 250px;
             background: white;
             padding: 10px;
             border-radius: 10px;
@@ -68,6 +65,7 @@ html_content = f"""
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 10px;
+            position: relative;
         }}
         textarea {{
             width: 100%;
@@ -79,7 +77,6 @@ html_content = f"""
         button {{
             padding: 10px 20px;
             font-size: 16px;
-            margin-top: 10px;
             border: none;
             background: #007BFF;
             color: white;
@@ -89,6 +86,44 @@ html_content = f"""
         button:hover {{
             background: #0056b3;
         }}
+        #responseBox {{
+            width: 80vw;
+            max-width: 800px;
+            text-align: center;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 5px;
+        }}
+        #submitDecisionBtn {{
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 20px;
+            padding: 8px 15px;
+        }}
+        #uploadTab {{
+            position: fixed;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            background: #333;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+        }}
+        #uploadPanel {{
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100%;
+            background: white;
+            box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.5);
+            transition: right 0.3s ease-in-out;
+            padding: 20px;
+        }}
     </style>
 </head>
 <body>
@@ -96,18 +131,33 @@ html_content = f"""
         <img id="map" src="{initial_map}">
     </div>
     
+    <div id="responseBox">
+        <p id="aiResponse">AI Response will appear here...</p>
+    </div>
+    
     <div id="decisionBox">
         <textarea id="userInput" placeholder="Enter your decision here..."></textarea>
-        <br>
-        <button onclick="submitDecision()">Submit Decision</button>
-        <p id="aiResponse"></p>
-        <br>
+        <button id="submitDecisionBtn" onclick="submitDecision()">✅</button>
+    </div>
+    
+    <div id="uploadTab" onclick="toggleUploadPanel()">Documents</div>
+    <div id="uploadPanel">
+        <h2>Upload Documents</h2>
         <input type="file" id="fileInput">
         <button onclick="uploadFile()">Upload</button>
         <p id="uploadMessage"></p>
     </div>
     
     <script>
+        function toggleUploadPanel() {{
+            let uploadPanel = document.getElementById("uploadPanel");
+            if (uploadPanel.style.right === "-300px") {{
+                uploadPanel.style.right = "0px";
+            }} else {{
+                uploadPanel.style.right = "-300px";
+            }}
+        }}
+        
         function uploadFile() {{
             let fileInput = document.getElementById("fileInput");
             let file = fileInput.files[0];
@@ -149,26 +199,3 @@ html_content = f"""
 </body>
 </html>
 """
-
-@app.route('/')
-def home():
-    return html_content, 200, {'Content-Type': 'text/html'}
-
-@app.route('/generate_map', methods=['GET'])
-def generate_map_endpoint():
-    map_url = generate_and_save_map()
-    return jsonify({"message": "Map generated!", "map_url": map_url})
-
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    return handle_document_upload(request, app.config['UPLOAD_FOLDER'])
-
-@app.route('/submit_decision', methods=['POST'])
-def submit_decision():
-    user_input = request.json.get("user_input", "")
-    ai_response = "Processing your decision based on historical data..."  # Placeholder response
-    return jsonify({"response": ai_response})
-
-if __name__ == '__main__':
-    webbrowser.open("http://127.0.0.1:5000")
-    app.run(debug=True)
