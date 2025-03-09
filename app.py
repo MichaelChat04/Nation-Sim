@@ -68,7 +68,7 @@ html_content = """
 
 @app.route('/')
 def home():
-    return html_content
+    return html_content, 200, {'Content-Type': 'text/html'}
 
 @app.route('/generate_map', methods=['GET'])
 def generate_map_endpoint():
