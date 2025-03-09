@@ -25,24 +25,30 @@ html_content = f"""
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nation Simulator</title>
     <style>
-        body {{
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }}
+        html, body {{
+            height: 100vh;
+            width: 100vw;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            height: 100vh;
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
-            padding: 20px;
+            overflow: hidden;
         }}
         #mapContainer {{
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 80%;
+            width: 80vw;
             max-width: 800px;
             height: auto;
-            margin-bottom: 20px;
+            margin-top: 10px;
             background: white;
             padding: 10px;
             border-radius: 10px;
@@ -54,14 +60,14 @@ html_content = f"""
             border-radius: 10px;
         }}
         #decisionBox {{
-            width: 80%;
+            width: 80vw;
             max-width: 800px;
             text-align: center;
             background: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }}
         textarea {{
             width: 100%;
