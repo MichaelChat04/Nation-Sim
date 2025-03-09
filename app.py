@@ -41,20 +41,30 @@ html_content = f"""
             background-color: #f4f4f4;
             overflow: hidden;
         }}
-        #mapContainer {{
+        #mapPanel {{
             position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 250px;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100%;
             background: white;
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.5);
+            transition: left 0.3s ease-in-out;
+            padding: 20px;
         }}
-        #mapContainer img {{
+        #mapTab {{
+            position: fixed;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            background: #333;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+        }}
+        #mapPanel img {{
             width: 100%;
             height: auto;
-            border-radius: 10px;
         }}
         #decisionBox {{
             width: 80vw;
@@ -65,7 +75,10 @@ html_content = f"""
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 10px;
-            position: relative;
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
         }}
         textarea {{
             width: 100%;
@@ -85,23 +98,6 @@ html_content = f"""
         }}
         button:hover {{
             background: #0056b3;
-        }}
-        #responseBox {{
-            width: 80vw;
-            max-width: 800px;
-            text-align: center;
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 5px;
-        }}
-        #submitDecisionBtn {{
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            font-size: 20px;
-            padding: 8px 15px;
         }}
         #uploadTab {{
             position: fixed;
@@ -127,12 +123,10 @@ html_content = f"""
     </style>
 </head>
 <body>
-    <div id="mapContainer">
+    <div id="mapTab" onclick="toggleMapPanel()">Map</div>
+    <div id="mapPanel">
         <img id="map" src="{initial_map}">
-    </div>
-    
-    <div id="responseBox">
-        <p id="aiResponse">AI Response will appear here...</p>
+        <button onclick="toggleMapPanel()">Close</button>
     </div>
     
     <div id="decisionBox">
@@ -146,9 +140,19 @@ html_content = f"""
         <input type="file" id="fileInput">
         <button onclick="uploadFile()">Upload</button>
         <p id="uploadMessage"></p>
+        <button onclick="toggleUploadPanel()">Close</button>
     </div>
     
     <script>
+        function toggleMapPanel() {{
+            let mapPanel = document.getElementById("mapPanel");
+            if (mapPanel.style.left === "-300px") {{
+                mapPanel.style.left = "0px";
+            }} else {{
+                mapPanel.style.left = "-300px";
+            }}
+        }}
+        
         function toggleUploadPanel() {{
             let uploadPanel = document.getElementById("uploadPanel");
             if (uploadPanel.style.right === "-300px") {{
@@ -161,10 +165,3 @@ html_content = f"""
 </body>
 </html>
 """
-
-@app.route('/')
-def home():
-    return html_content, 200, {'Content-Type': 'text/html'}
-
-if __name__ == '__main__':
-    app.run(debug=True)
