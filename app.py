@@ -4,7 +4,8 @@ import webbrowser
 from map_generator import generate_and_save_map
 from document_handler import handle_document_upload
 
-app = Flask(__name__)
+import os
+app = Flask(__name__, template_folder=os.path.join(os.getcwd(), "templates"))
 UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs('static', exist_ok=True)
