@@ -23,14 +23,15 @@
         }
         #mapPanel {
             position: fixed;
-            top: 0;
-            left: -300px;
-            width: 300px;
-            height: 100%;
+            top: 50%;
+            left: -350px;
+            width: 350px;
+            height: auto;
             background: white;
             box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.5);
             transition: left 0.3s ease-in-out;
-            padding: 20px;
+            padding: 15px;
+            border-radius: 10px;
         }
         #mapTab {
             position: fixed;
@@ -45,6 +46,8 @@
         #mapPanel img {
             width: 100%;
             height: auto;
+            display: block;
+            margin: 0 auto;
         }
         #decisionBox {
             width: 80vw;
@@ -57,6 +60,19 @@
             margin-bottom: 10px;
             position: fixed;
             bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        #responseBox {
+            width: 80vw;
+            max-width: 800px;
+            text-align: center;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            bottom: 200px;
             left: 50%;
             transform: translateX(-50%);
         }
@@ -100,6 +116,11 @@
             transition: right 0.3s ease-in-out;
             padding: 20px;
         }
+        .upload-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -107,6 +128,10 @@
     <div id="mapPanel">
         <img id="map" src="static/map.png">
         <button onclick="toggleMapPanel()">Close</button>
+    </div>
+    
+    <div id="responseBox">
+        <p id="aiResponse">AI Response will appear here...</p>
     </div>
     
     <div id="decisionBox">
@@ -118,21 +143,23 @@
     <div id="uploadPanel">
         <h2>Upload Documents</h2>
         <input type="file" id="fileInput">
-        <button onclick="uploadFile()">Upload</button>
+        <div class="upload-buttons">
+            <button onclick="uploadFile()">Upload</button>
+            <button onclick="toggleUploadPanel()">Close</button>
+        </div>
         <p id="uploadMessage"></p>
-        <button onclick="toggleUploadPanel()">Close</button>
     </div>
     
     <script>
         function toggleMapPanel() {
             let mapPanel = document.getElementById("mapPanel");
-            if (mapPanel.style.left === "-300px") {
+            if (mapPanel.style.left === "-350px") {
                 mapPanel.style.left = "0px";
             } else {
-                mapPanel.style.left = "-300px";
+                mapPanel.style.left = "-350px";
             }
         }
-
+        
         function toggleUploadPanel() {
             let uploadPanel = document.getElementById("uploadPanel");
             if (uploadPanel.style.right === "-300px") {
@@ -141,7 +168,7 @@
                 uploadPanel.style.right = "-300px";
             }
         }
-
+        
         function submitDecision() {
             let userInput = document.getElementById("userInput").value;
             
@@ -154,7 +181,7 @@
             })
             .then(response => response.json())
             .then(data => {
-                alert("AI Response: " + data.response);
+                document.getElementById("aiResponse").innerText = "AI Response: " + data.response;
             });
         }
     </script>
