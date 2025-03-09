@@ -157,45 +157,14 @@ html_content = f"""
                 uploadPanel.style.right = "-300px";
             }}
         }}
-        
-        function uploadFile() {{
-            let fileInput = document.getElementById("fileInput");
-            let file = fileInput.files[0];
-            
-            if (!file) {{
-                alert("Please select a file to upload.");
-                return;
-            }}
-            
-            let formData = new FormData();
-            formData.append("file", file);
-            
-            fetch("/upload", {{
-                method: "POST",
-                body: formData
-            }})
-            .then(response => response.json())
-            .then(data => {{
-                document.getElementById("uploadMessage").innerText = data.message;
-            }});
-        }}
-        
-        function submitDecision() {{
-            let userInput = document.getElementById("userInput").value;
-            
-            fetch("/submit_decision", {{
-                method: "POST",
-                headers: {{
-                    "Content-Type": "application/json"
-                }},
-                body: JSON.stringify({{ user_input: userInput }})
-            }})
-            .then(response => response.json())
-            .then(data => {{
-                document.getElementById("aiResponse").innerText = "AI Response: " + data.response;
-            }});
-        }}
     </script>
 </body>
 </html>
 """
+
+@app.route('/')
+def home():
+    return html_content, 200, {'Content-Type': 'text/html'}
+
+if __name__ == '__main__':
+    app.run(debug=True)
