@@ -1,11 +1,10 @@
 import os
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, send_file, request, jsonify
 import webbrowser
 from map_generator import generate_and_save_map
 from document_handler import handle_document_upload
 
-import os
-app = Flask(__name__, template_folder=os.path.join(os.getcwd(), "templates"))
+app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs('static', exist_ok=True)
@@ -13,7 +12,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return send_file("templates/index.html")
 
 @app.route('/generate_map', methods=['GET'])
 def generate_map_endpoint():
